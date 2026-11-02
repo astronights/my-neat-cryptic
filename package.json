@@ -1,0 +1,20 @@
+{
+  "name": "cryptic-pwa",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Offline-first PWA for learning and solving cryptic crossword clues.",
+  "scripts": {
+    "dev": "npx serve .",
+    "upload:blob": "node scripts/upload-data.mjs blob",
+    "upload:neon": "node scripts/upload-data.mjs neon",
+    "icons": "node scripts/make-icons.mjs",
+    "rename": "node scripts/rename.mjs",
+    "test": "node tests/e2e.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "@vercel/blob": "^2.0.0"
+  },
+  "engines": { "node": ">=18" }
+}

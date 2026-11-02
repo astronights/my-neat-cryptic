@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env*.local
+.vercel/
+test-results/
+# The book data is uploaded to Vercel Blob / Neon instead of living in the repo.
+# Remove this line if you want to deploy it as a static file (GitHub Pages, Netlify).
+data/minute_cryptic.json
