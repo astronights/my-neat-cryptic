@@ -1,7 +1,7 @@
 // Service worker: precaches the app shell + puzzle data so the app works offline.
 // Bump VERSION whenever any app file changes; the new worker waits until the
 // user taps "Reload" on the update toast.
-const VERSION = 'v1.0.0';
+const VERSION = 'v1.0.1';
 const SHELL_CACHE = `cq-shell-${VERSION}`;
 const DATA_CACHE = `cq-data-${VERSION}`;
 const FONT_CACHE = 'cq-fonts-v1';

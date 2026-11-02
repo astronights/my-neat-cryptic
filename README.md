@@ -1,10 +1,10 @@
-# Clueworthy
+# My Neat Cryptic
 
 A static, offline-first PWA for learning and solving cryptic crossword clues:
 12 chapters of lessons and 101 clues, 6 mini crosswords and a 15×15 Mega crossword.
 Plain HTML + CSS + vanilla ES modules. No build step, no framework.
 
-> **Renaming:** "Clueworthy" is a placeholder. Run `node scripts/rename.mjs "New Name" "Short"`
+> **Renaming:** Run `node scripts/rename.mjs "New Name" "Short"`
 > to update `js/config.js`, `index.html` and `manifest.webmanifest` together, then bump
 > `VERSION` in `sw.js`.
 

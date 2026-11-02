@@ -2,8 +2,8 @@
 //   node scripts/rename.mjs "New Name" "Short"
 // (it updates this file, index.html and manifest.webmanifest together).
 export const APP = {
-  name: 'Clueworthy',
-  shortName: 'Clueworthy',
+  name: 'My Neat Cryptic',
+  shortName: 'My Neat Cryptic',
   tagline: 'Cryptic clues, one at a time.',
 };
 
