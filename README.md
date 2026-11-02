@@ -65,7 +65,22 @@ offline, and there are no console errors.
 loads `data/minute_cryptic.json`; on Vercel, `vercel.json` rewrites that path to
 `/api/data`, which reads it from Vercel Blob or Neon.
 
-Upload it once (credentials come from the environment or `.env.local`):
+### Easiest: upload in the Vercel dashboard (no CLI)
+
+1. In your Vercel project, open **Storage** → **Create Database** → **Blob** and connect it to
+   the project (this adds `BLOB_READ_WRITE_TOKEN` automatically).
+2. Open the Blob store's **Browser** tab and click **Upload**. Pick `minute_cryptic.json`.
+   Any folder is fine, and so is a random suffix on the name: `/api/data` uses the newest blob
+   named `minute_cryptic*.json`. Public and private stores both work.
+3. Redeploy the project (Deployments → ⋯ → Redeploy) so the function picks up the new
+   environment variable.
+4. Check `https://<your-site>/api/data` shows the JSON.
+
+### Or: upload with the script
+
+Credentials come from the environment or `.env.local`. Without the Vercel CLI, copy
+`BLOB_READ_WRITE_TOKEN` (or `DATABASE_URL` for Neon) from the project's **Settings →
+Environment Variables** into a `.env.local` file instead of running `vercel env pull`.
 
 ```bash
 npm install

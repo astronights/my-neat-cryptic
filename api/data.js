@@ -3,20 +3,46 @@
 // Which store is used:
 //   DATA_SOURCE=blob|neon   (optional; otherwise whichever is configured)
 //   Blob: BLOB_READ_WRITE_TOKEN (added automatically when you connect a Blob store)
-//         BLOB_ACCESS=private|public (default private), BLOB_PATHNAME (default data/minute_cryptic.json)
+//         BLOB_ACCESS=private|public (optional), BLOB_PATHNAME (default data/minute_cryptic.json).
+//         If the file isn't at that path (e.g. uploaded in the dashboard), the newest
+//         blob named minute_cryptic*.json anywhere in the store is used.
 //   Neon: DATABASE_URL (added automatically by the Neon integration)
 //
-// Upload the file first with: npm run upload:blob   or   npm run upload:neon
+// Upload the file with the Vercel dashboard (Storage → your Blob store → Upload),
+// or with: npm run upload:blob   or   npm run upload:neon
 
 const PATHNAME = process.env.BLOB_PATHNAME || 'data/minute_cryptic.json';
 const DATA_KEY = process.env.DATA_KEY || 'minute_cryptic';
 
 async function fromBlob() {
   if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID) return null;
-  const { get } = await import('@vercel/blob');
-  const res = await get(PATHNAME, { access: process.env.BLOB_ACCESS || 'private' });
-  if (!res || res.statusCode !== 200) return null;
-  return await new Response(res.stream).text();
+  const { get, list } = await import('@vercel/blob');
+  // Try the configured access first, then the other one (stores can be public or private).
+  const preferred = process.env.BLOB_ACCESS === 'public' ? 'public' : 'private';
+  const accesses = [preferred, preferred === 'public' ? 'private' : 'public'];
+  const read = async (where) => {
+    for (const access of accesses) {
+      try {
+        const res = await get(where, { access });
+        if (res && res.statusCode === 200) return await new Response(res.stream).text();
+      } catch { /* wrong access type or not found: try the next */ }
+    }
+    return null;
+  };
+  // 1. The exact path the upload script uses.
+  const exact = await read(PATHNAME);
+  if (exact) return exact;
+  // 2. Uploaded through the dashboard: find any "minute_cryptic*.json" (any folder,
+  //    with or without a random suffix) and use the newest.
+  const found = [];
+  let cursor;
+  do {
+    const page = await list({ cursor, limit: 1000 });
+    found.push(...page.blobs.filter((b) => /(^|\/)minute_cryptic[^/]*\.json$/i.test(b.pathname)));
+    cursor = page.hasMore ? page.cursor : undefined;
+  } while (cursor);
+  found.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+  return found.length ? read(found[0].url) : null;
 }
 
 async function fromNeon() {
