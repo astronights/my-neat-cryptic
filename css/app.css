@@ -65,6 +65,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+  overflow-x: clip;
 }
 a { color: inherit; }
 button { font: inherit; color: inherit; }
@@ -186,9 +187,9 @@ a.card:active { transform: translate(1px, 1px); box-shadow: none; }
 /* ==========================================================================
    Learn
    ========================================================================== */
-.book-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.book-links { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
 .book-link { display: flex; align-items: center; gap: 10px; padding: 12px; }
-.book-link > span:last-child { display: flex; flex-direction: column; line-height: 1.25; }
+.book-link > span:last-child { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; overflow-wrap: anywhere; }
 .book-link small { color: var(--muted); font-size: 0.78rem; }
 .continue-card { margin-top: 14px; padding: 16px; box-shadow: var(--shadow); }
 .continue-card .continue-clue { font-size: 1.25rem; line-height: 1.35; margin: 6px 0 14px; }
@@ -213,6 +214,21 @@ a.card:active { transform: translate(1px, 1px); box-shadow: none; }
 .path-node.current .ring { box-shadow: var(--shadow-sm); border: 2px solid var(--ink); }
 .path-node.current .path-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 .path-node .pill-continue { margin-top: 4px; }
+.path-link { max-width: 100%; }
+
+/* Phones: the zig-zag leaves too little room for long chapter titles, so use one
+   column with the dotted line running down through the chapter circles. */
+@media (max-width: 559px) {
+  .path::before { left: 36px; transform: none; top: 30px; }
+  .path-node, .path-node.left, .path-node.right {
+    width: 100%; margin: 0; padding: 2px 0;
+    align-items: flex-start; text-align: left;
+  }
+  .path-node + .path-node, .path-node.current + .path-node { margin-top: 0; }
+  .path-node.left .path-link { flex-direction: row; }
+  .path-link { gap: 14px; }
+  .path-node .pill-continue { margin: 0 0 8px 80px; }
+}
 
 .ring { position: relative; display: inline-grid; place-items: center; flex: none; }
 .ring svg { position: absolute; inset: 0; }
